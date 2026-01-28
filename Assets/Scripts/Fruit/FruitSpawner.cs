@@ -12,12 +12,14 @@ public class FruitSpawner : MonoBehaviour
     [SerializeField] private LineRenderer trajectoryLine;
     [SerializeField] private int trajectoryPoints = 10;
     [SerializeField] private float trajectoryTimeStep = 0.15f;
+    [SerializeField] private TextAsset probabilityConfigJson;
 
     private Fruit currentFruit;
     private FruitType nextFruitType;
     private Camera mainCamera;
     private bool isDragging = false;
     private float currentFruitRadius = 0f;
+    private SpawnProbabilityConfig probabilityConfig;
 
     void Awake()
     {
@@ -35,6 +37,20 @@ public class FruitSpawner : MonoBehaviour
         if (trajectoryLine != null)
         {
             trajectoryLine.enabled = false;
+        }
+
+        LoadProbabilityConfig();
+    }
+
+    void LoadProbabilityConfig()
+    {
+        if (probabilityConfigJson != null)
+        {
+            probabilityConfig = JsonUtility.FromJson<SpawnProbabilityConfig>(probabilityConfigJson.text);
+        }
+        else
+        {
+            Debug.LogError("Probability config JSON not assigned!");
         }
     }
 
@@ -190,58 +206,25 @@ public class FruitSpawner : MonoBehaviour
 
     float[] GetProbabilities(int maxLevel, int activeFruits, int noMergeCount)
     {
+        if (probabilityConfig == null) return new float[] { 1f, 0f, 0f, 0f, 0f };
+
         float[] probs = new float[5];
 
-        if (maxLevel <= 2)
+        foreach (var set in probabilityConfig.probabilitySets)
         {
-            probs[0] = 0.40f;
-            probs[1] = 0.30f;
-            probs[2] = 0.20f;
-            probs[3] = 0.10f;
-        }
-        else if (maxLevel == 3)
-        {
-            probs[0] = 0.35f;
-            probs[1] = 0.30f;
-            probs[2] = 0.20f;
-            probs[3] = 0.15f;
-        }
-        else if (maxLevel <= 5)
-        {
-            probs[0] = 0.30f;
-            probs[1] = 0.28f;
-            probs[2] = 0.22f;
-            probs[3] = 0.15f;
-            probs[4] = 0.05f;
-        }
-        else if (maxLevel <= 7)
-        {
-            probs[0] = 0.28f;
-            probs[1] = 0.26f;
-            probs[2] = 0.22f;
-            probs[3] = 0.16f;
-            probs[4] = 0.08f;
-        }
-        else if (maxLevel <= 9)
-        {
-            probs[0] = 0.25f;
-            probs[1] = 0.24f;
-            probs[2] = 0.22f;
-            probs[3] = 0.18f;
-            probs[4] = 0.11f;
-        }
-        else
-        {
-            probs[0] = 0.22f;
-            probs[1] = 0.22f;
-            probs[2] = 0.21f;
-            probs[3] = 0.19f;
-            probs[4] = 0.16f;
+            if (maxLevel <= set.maxLevelThreshold)
+            {
+                for (int i = 0; i < Mathf.Min(probs.Length, set.probabilities.Length); i++)
+                {
+                    probs[i] = set.probabilities[i];
+                }
+                break;
+            }
         }
 
-        if (activeFruits >= 20)
+        if (activeFruits >= probabilityConfig.emergencyFruitCount)
         {
-            float boost = 0.15f;
+            float boost = probabilityConfig.emergencyBoost;
             probs[0] += boost * 0.7f;
             probs[1] += boost * 0.3f;
             for (int i = 2; i < probs.Length; i++)
@@ -250,9 +233,9 @@ public class FruitSpawner : MonoBehaviour
             }
         }
 
-        if (noMergeCount >= 5)
+        if (noMergeCount >= probabilityConfig.noMergeThreshold)
         {
-            probs[0] += 0.20f;
+            probs[0] += probabilityConfig.noMergeBoost;
             for (int i = 1; i < probs.Length; i++)
             {
                 probs[i] *= 0.8f;

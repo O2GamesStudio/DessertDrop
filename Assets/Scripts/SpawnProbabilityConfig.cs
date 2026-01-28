@@ -1,16 +1,20 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnProbabilityConfig : MonoBehaviour
+[Serializable]
+public class SpawnProbabilityConfig
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Serializable]
+    public class ProbabilitySet
     {
-        
+        public int maxLevelThreshold;
+        public float[] probabilities;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public List<ProbabilitySet> probabilitySets;
+    public float emergencyBoost = 0.15f;
+    public int emergencyFruitCount = 20;
+    public float noMergeBoost = 0.20f;
+    public int noMergeThreshold = 5;
 }

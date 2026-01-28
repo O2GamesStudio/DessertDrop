@@ -581,6 +581,7 @@ MonoBehaviour:
   trajectoryLine: {fileID: 2052411334}
   trajectoryPoints: 20
   trajectoryTimeStep: 0.1
+  probabilityConfigJson: {fileID: 4900000, guid: 2fe7d6c23eabe9f44b6278416e3bb837, type: 3}
 --- !u!1 &679449319
 GameObject:
   m_ObjectHideFlags: 0
