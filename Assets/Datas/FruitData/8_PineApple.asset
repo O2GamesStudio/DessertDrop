@@ -16,6 +16,6 @@ MonoBehaviour:
   radius: 1.7
   color: {r: 0.498761, g: 0.8584906, b: 0, a: 0}
   score: 1
-  explosionRadiusMultiplier: 1
-  explosionForce: 3
+  explosionRadiusMultiplier: 1.5
+  explosionForce: 1
   mass: 9

@@ -309,6 +309,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: efda158e8225c2c4389190cc3784f496, type: 2}
   - {fileID: 11400000, guid: a505cf647f7d684458b78b74f69cd196, type: 2}
   - {fileID: 11400000, guid: 81684518da56a5d49bfee500025c1cd6, type: 2}
+  - {fileID: 11400000, guid: 38989b79220a1ea459ad6d1ab36b90f8, type: 2}
+  - {fileID: 11400000, guid: 4a55a54f701804c4aad7ebd35a6a3f7e, type: 2}
+  - {fileID: 11400000, guid: 9c5ae38ecfa70a4449d246b63f3935fd, type: 2}
+  - {fileID: 11400000, guid: ece185210e6bf1b438536c13f9c58dad, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,7 +560,7 @@ Transform:
   m_GameObject: {fileID: 639118477}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -576,7 +580,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FruitSpawner
   fruitPrefab: {fileID: 6280949404762258592, guid: fbccf43cf9d402f428da2686ca451600, type: 3}
   spawnPoint: {fileID: 639118478}
-  spawnHeight: 3
   containerHalfWidth: 2.7
   trajectoryLine: {fileID: 2052411334}
   trajectoryPoints: 20
@@ -889,6 +892,50 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &1368446622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1368446623}
+  - component: {fileID: 1368446624}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1368446623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368446622}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1368446624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368446622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50f1383ce50f1c348b86cc2e0885a54b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
 --- !u!1 &1504967802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1396,6 +1443,7 @@ SceneRoots:
   - {fileID: 679449320}
   - {fileID: 437830526}
   - {fileID: 639118478}
+  - {fileID: 1368446623}
   - {fileID: 1901377895}
   - {fileID: 1910072432}
   - {fileID: 2109372426}

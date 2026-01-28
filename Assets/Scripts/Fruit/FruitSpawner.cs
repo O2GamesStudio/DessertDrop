@@ -7,7 +7,6 @@ public class FruitSpawner : MonoBehaviour
 
     [SerializeField] private GameObject fruitPrefab;
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private float spawnHeight = 4f;
     [SerializeField] private float containerHalfWidth = 2f;
     [SerializeField] private LineRenderer trajectoryLine;
     [SerializeField] private int trajectoryPoints = 10;
@@ -70,7 +69,7 @@ public class FruitSpawner : MonoBehaviour
             Vector3 worldPos = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, 10f));
             float halfSize = currentFruitRadius;
             float clampedX = Mathf.Clamp(worldPos.x, -containerHalfWidth + halfSize, containerHalfWidth - halfSize);
-            currentFruit.transform.position = new Vector3(clampedX, spawnHeight, 0f);
+            currentFruit.transform.position = new Vector3(clampedX, this.transform.position.y, 0f);
 
             if (!isDragging)
             {
@@ -184,8 +183,7 @@ public class FruitSpawner : MonoBehaviour
         int activeFruits = GameManager.Instance.GetActiveFruitCount();
         int noMergeCount = GameManager.Instance.GetConsecutiveNoMerge();
 
-        int spawnMax = Mathf.Min(maxLevel > 0 ? maxLevel - 1 : 0, 4);
-        spawnMax = Mathf.Max(spawnMax, 0);
+        int spawnMax = 4;
 
         float[] probabilities = GetProbabilities(maxLevel, activeFruits, noMergeCount);
 
@@ -203,7 +201,6 @@ public class FruitSpawner : MonoBehaviour
 
         return (FruitType)0;
     }
-
     float[] GetProbabilities(int maxLevel, int activeFruits, int noMergeCount)
     {
         if (probabilityConfig == null) return new float[] { 1f, 0f, 0f, 0f, 0f };
