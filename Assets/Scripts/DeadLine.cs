@@ -3,8 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class DeadLine : MonoBehaviour
 {
-    public float checkDelay = 3f;
-    public Vector2 colliderSize = new Vector2(4f, 0.1f);
+    [SerializeField] private float checkDelay = 3f;
+    [SerializeField] private Vector2 colliderSize = new Vector2(4f, 0.1f);
 
     private float timer = 0f;
     private bool isGameOver = false;
@@ -22,7 +22,7 @@ public class DeadLine : MonoBehaviour
         if (isGameOver) return;
 
         Fruit fruit = collision.GetComponent<Fruit>();
-        if (fruit != null)
+        if (fruit != null && fruit.CanCheckGameOver())
         {
             timer += Time.deltaTime;
 
@@ -45,7 +45,7 @@ public class DeadLine : MonoBehaviour
     void GameOver()
     {
         isGameOver = true;
-        Debug.Log("Game Over! Final Score: " + GameManager.Instance.score);
+        Debug.Log("Game Over! Final Score: " + GameManager.Instance.GetScore());
         Time.timeScale = 0f;
     }
 }

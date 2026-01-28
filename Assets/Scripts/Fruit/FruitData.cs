@@ -7,4 +7,7 @@ public class FruitData : ScriptableObject
     public float radius;
     public Color color;
     public int score;
+    public float explosionRadiusMultiplier = 2f;
+    public float explosionForce = 5f;
+    public float mass = 1f;
 }

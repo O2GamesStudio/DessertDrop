@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: 5_Apple
   m_EditorClassIdentifier: Assembly-CSharp::FruitData
   type: 5
-  radius: 0.8
+  radius: 1.1
   color: {r: 1, g: 0.13088842, b: 0, a: 0}
   score: 1
+  explosionRadiusMultiplier: 1
+  explosionForce: 3
+  mass: 3.5

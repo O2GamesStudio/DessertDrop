@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b19d9cb4dbc55e43aae042ce2dd7ac5, type: 3}
-  m_Name: 2_Grape
+  m_Name: 7_Peach
   m_EditorClassIdentifier: Assembly-CSharp::FruitData
-  type: 2
-  radius: 0.5
-  color: {r: 0.7868676, g: 0, b: 1, a: 0}
+  type: 7
+  radius: 1.5
+  color: {r: 0, g: 1, b: 0.6556065, a: 0}
   score: 1
   explosionRadiusMultiplier: 1
   explosionForce: 3
-  mass: 1.2
+  mass: 7

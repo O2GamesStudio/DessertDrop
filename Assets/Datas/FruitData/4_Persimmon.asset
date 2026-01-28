@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: 4_Persimmon
   m_EditorClassIdentifier: Assembly-CSharp::FruitData
   type: 4
-  radius: 0.7
+  radius: 0.9
   color: {r: 1, g: 0.9561808, b: 0, a: 0}
   score: 1
+  explosionRadiusMultiplier: 1
+  explosionForce: 3
+  mass: 2.5

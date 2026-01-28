@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Container : MonoBehaviour
 {
-    public Transform leftWall;
-    public Transform rightWall;
-    public Transform bottom;
+    [SerializeField] private Transform leftWall;
+    [SerializeField] private Transform rightWall;
+    [SerializeField] private Transform bottom;
 }

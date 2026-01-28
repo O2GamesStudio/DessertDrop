@@ -3,14 +3,12 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(SpriteRenderer))]
 public class Fruit : MonoBehaviour
 {
-    public FruitType fruitType;
-    public float explosionRadiusMultiplier = 2f;
-    public float explosionForce = 5f;
-
+    private FruitType fruitType;
     private Rigidbody2D rb;
     private CircleCollider2D col;
     private SpriteRenderer sr;
     private bool canMerge = false;
+    private bool canCheckGameOver = false;
 
     void Awake()
     {
@@ -57,7 +55,12 @@ public class Fruit : MonoBehaviour
         color.a = 1f;
         sr.color = color;
 
+        rb.mass = data.mass;
+        rb.linearDamping = 0.5f;
+        rb.angularDamping = 0.5f;
         rb.gravityScale = 1f;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         rb.bodyType = RigidbodyType2D.Dynamic;
     }
 
@@ -65,6 +68,12 @@ public class Fruit : MonoBehaviour
     {
         rb.bodyType = RigidbodyType2D.Dynamic;
         canMerge = true;
+        Invoke(nameof(EnableGameOverCheck), 2f);
+    }
+
+    void EnableGameOverCheck()
+    {
+        canCheckGameOver = true;
     }
 
     public void DisablePhysics()
@@ -72,6 +81,12 @@ public class Fruit : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.linearVelocity = Vector2.zero;
         canMerge = false;
+        canCheckGameOver = false;
+    }
+
+    public bool CanCheckGameOver()
+    {
+        return canCheckGameOver;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -81,7 +96,8 @@ public class Fruit : MonoBehaviour
         Fruit otherFruit = collision.gameObject.GetComponent<Fruit>();
         if (otherFruit != null && otherFruit.canMerge && otherFruit.fruitType == fruitType)
         {
-            if (fruitType != FruitType.Watermelon)
+            int nextIndex = (int)fruitType + 1;
+            if (nextIndex < GameManager.Instance.GetFruitDataCount())
             {
                 Merge(otherFruit);
             }
@@ -97,8 +113,10 @@ public class Fruit : MonoBehaviour
 
         FruitData data = GameManager.Instance.GetFruitData(fruitType);
         GameManager.Instance.AddScore(data.score);
+        GameManager.Instance.UpdateMaxLevel((int)nextType);
+        GameManager.Instance.ResetNoMerge();
 
-        ApplyExplosionForce(mergePosition, data.radius);
+        ApplyExplosionForce(mergePosition, data);
 
         FruitSpawner.Instance.SpawnMergedFruit(nextType, mergePosition);
 
@@ -106,9 +124,9 @@ public class Fruit : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void ApplyExplosionForce(Vector3 explosionPosition, float fruitRadius)
+    void ApplyExplosionForce(Vector3 explosionPosition, FruitData data)
     {
-        float explosionRadius = fruitRadius * explosionRadiusMultiplier;
+        float explosionRadius = data.radius * data.explosionRadiusMultiplier;
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(explosionPosition, explosionRadius);
 
@@ -117,9 +135,9 @@ public class Fruit : MonoBehaviour
             Rigidbody2D targetRb = col.GetComponent<Rigidbody2D>();
             if (targetRb != null && targetRb != rb)
             {
-                Vector2 direction = (col.transform.position - explosionPosition).normalized;
+                Vector2 direction = ((Vector2)col.transform.position - (Vector2)explosionPosition).normalized;
                 float distance = Vector2.Distance(col.transform.position, explosionPosition);
-                float forceMagnitude = explosionForce * (1f - distance / explosionRadius);
+                float forceMagnitude = data.explosionForce * (1f - distance / explosionRadius);
 
                 targetRb.AddForce(direction * forceMagnitude, ForceMode2D.Impulse);
             }

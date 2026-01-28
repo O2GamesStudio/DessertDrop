@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: 0_cherry
   m_EditorClassIdentifier: Assembly-CSharp::FruitData
   type: 0
-  radius: 0.3
+  radius: 0.1
   color: {r: 0.745283, g: 0.376157, b: 0.376157, a: 0}
   score: 1
+  explosionRadiusMultiplier: 1
+  explosionForce: 3
+  mass: 0.5
