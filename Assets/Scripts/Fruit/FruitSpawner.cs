@@ -40,25 +40,6 @@ public class FruitSpawner : MonoBehaviour
 
         LoadProbabilityConfig();
     }
-
-    void LoadProbabilityConfig()
-    {
-        if (probabilityConfigJson != null)
-        {
-            probabilityConfig = JsonUtility.FromJson<SpawnProbabilityConfig>(probabilityConfigJson.text);
-        }
-        else
-        {
-            Debug.LogError("Probability config JSON not assigned!");
-        }
-    }
-
-    void Start()
-    {
-        nextFruitType = GetRandomFruitType();
-        SpawnNextFruit();
-    }
-
     void Update()
     {
         if (currentFruit == null) return;
@@ -94,26 +75,70 @@ public class FruitSpawner : MonoBehaviour
         }
     }
 
+    void LoadProbabilityConfig()
+    {
+        if (probabilityConfigJson != null)
+        {
+            probabilityConfig = JsonUtility.FromJson<SpawnProbabilityConfig>(probabilityConfigJson.text);
+        }
+        else
+        {
+            Debug.LogError("Probability config JSON not assigned!");
+        }
+    }
+
+    void Start()
+    {
+        nextFruitType = GetRandomFruitType();
+        SpawnNextFruit();
+    }
     void UpdateTrajectory(Vector3 startPosition)
     {
         if (trajectoryLine == null) return;
 
-        trajectoryLine.positionCount = trajectoryPoints;
-        Vector3 velocity = Vector3.zero;
-        Vector3 gravity = Physics2D.gravity;
-        Vector3 position = startPosition;
+        Vector2 origin = startPosition;
+        Vector2 direction = Vector2.down;
+        float maxDistance = 20f;
 
-        for (int i = 0; i < trajectoryPoints; i++)
+        int layerMask = LayerMask.GetMask("Container", "Fruit");
+        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, maxDistance, layerMask);
+
+        trajectoryLine.positionCount = 2;
+        trajectoryLine.SetPosition(0, startPosition);
+
+        RaycastHit2D validHit = default;
+        float closestDistance = maxDistance;
+        bool foundHit = false;
+
+        foreach (var hit in hits)
         {
-            trajectoryLine.SetPosition(i, position);
-            velocity += gravity * trajectoryTimeStep;
-            position += velocity * trajectoryTimeStep;
-
-            if (position.y < -3f)
+            if (currentFruit != null && hit.collider.gameObject == currentFruit.gameObject)
             {
-                trajectoryLine.positionCount = i + 1;
-                break;
+                continue;
             }
+
+            if (hit.distance < closestDistance)
+            {
+                closestDistance = hit.distance;
+                validHit = hit;
+                foundHit = true;
+            }
+        }
+
+        if (foundHit)
+        {
+            float extensionMultiplier = 3f;
+            Vector3 hitPoint = validHit.point;
+            Vector3 extendedPoint = (Vector3)origin + (Vector3)(direction * validHit.distance * extensionMultiplier);
+
+            trajectoryLine.SetPosition(1, extendedPoint);
+            Debug.DrawLine(startPosition, extendedPoint, Color.green);
+        }
+        else
+        {
+            Vector3 endPoint = startPosition + Vector3.down * maxDistance;
+            trajectoryLine.SetPosition(1, endPoint);
+            Debug.DrawLine(startPosition, endPoint, Color.yellow);
         }
     }
 
