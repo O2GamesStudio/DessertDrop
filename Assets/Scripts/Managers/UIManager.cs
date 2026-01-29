@@ -1,12 +1,14 @@
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private Image nextObjectImage;
     [SerializeField] private float countUpSpeed = 100f;
 
     private int currentDisplayScore = 0;
@@ -37,6 +39,20 @@ public class UIManager : MonoBehaviour
         if (countUpCoroutine == null)
         {
             countUpCoroutine = StartCoroutine(CountUpScore());
+        }
+    }
+
+    public void UpdateNextFruitUI(FruitType nextFruitType)
+    {
+        if (nextObjectImage != null)
+        {
+            FruitData data = GameManager.Instance.GetFruitData(nextFruitType);
+            if (data != null)
+            {
+                Color color = data.color;
+                color.a = 1f;
+                nextObjectImage.color = color;
+            }
         }
     }
 

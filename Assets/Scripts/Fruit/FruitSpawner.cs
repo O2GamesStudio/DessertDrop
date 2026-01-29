@@ -182,6 +182,7 @@ public class FruitSpawner : MonoBehaviour
         currentFruitRadius = data.radius;
 
         nextFruitType = GetRandomFruitType();
+        UIManager.Instance.UpdateNextFruitUI(nextFruitType);
     }
 
     void DropFruit()
