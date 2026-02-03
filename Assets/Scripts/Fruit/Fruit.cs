@@ -16,6 +16,7 @@ public class Fruit : MonoBehaviour
     private SpriteRenderer sr;
     private bool canMerge = false;
     private bool isPhysicsEnabled = false;
+    private bool isMerging = false;
 
     void Awake()
     {
@@ -98,10 +99,10 @@ public class Fruit : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!canMerge) return;
+        if (!canMerge || isMerging) return;
 
         Fruit otherFruit = collision.gameObject.GetComponent<Fruit>();
-        if (otherFruit != null && otherFruit.canMerge && otherFruit.fruitType == fruitType)
+        if (otherFruit != null && otherFruit.canMerge && !otherFruit.isMerging && otherFruit.fruitType == fruitType)
         {
             int nextIndex = (int)fruitType + 1;
             if (nextIndex < GameManager.Instance.GetFruitDataCount())
@@ -114,6 +115,9 @@ public class Fruit : MonoBehaviour
     void Merge(Fruit other)
     {
         if (GetInstanceID() < other.GetInstanceID()) return;
+
+        isMerging = true;
+        other.isMerging = true;
 
         Vector3 mergePosition = (transform.position + other.transform.position) / 2f;
         FruitType nextType = (FruitType)((int)fruitType + 1);
@@ -129,7 +133,6 @@ public class Fruit : MonoBehaviour
         Destroy(other.gameObject);
         Destroy(gameObject);
     }
-
     void ApplyPushForce(Vector3 explosionPosition, FruitType nextType)
     {
         GameObject nextPrefab = GameManager.Instance.GetFruitPrefab(nextType);
