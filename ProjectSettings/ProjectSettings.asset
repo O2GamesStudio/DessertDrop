@@ -792,11 +792,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: aba140c9-b7ac-485b-8ed5-4995304ed614
+  cloudProjectId: a95a73c1-9333-4dce-9b9e-2797e18bf5fb
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: WatermelonGame_L
-  organizationId: ehdgjs100
+  projectName: WaterMelonGame
+  organizationId: o2gamesstudio
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

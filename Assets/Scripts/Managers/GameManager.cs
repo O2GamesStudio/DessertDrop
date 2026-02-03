@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     private int score;
     private int currentMaxLevel = 0;
     private int consecutiveNoMerge = 0;
+    private bool isGameOver = false;
 
     void Awake()
     {
@@ -82,5 +83,18 @@ public class GameManager : MonoBehaviour
     public int GetActiveFruitCount()
     {
         return FindObjectsByType<Fruit>(FindObjectsSortMode.None).Length;
+    }
+
+    public void TriggerGameOver()
+    {
+        if (isGameOver) return;
+        isGameOver = true;
+        Time.timeScale = 0f;
+        UIManager.Instance.ShowGameOverUI(score);
+    }
+
+    public bool IsGameOver()
+    {
+        return isGameOver;
     }
 }

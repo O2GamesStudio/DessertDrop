@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class DeadLine : MonoBehaviour
 {
-    [SerializeField] private float checkDelay = 3f;
+    [SerializeField] private float checkDelay = 2f;
     [SerializeField] private Vector2 colliderSize = new Vector2(4f, 0.1f);
 
     private float timer = 0f;
@@ -17,35 +17,50 @@ public class DeadLine : MonoBehaviour
         col.size = colliderSize;
     }
 
-    void OnTriggerStay2D(Collider2D collision)
+    void Update()
     {
         if (isGameOver) return;
 
-        Fruit fruit = collision.GetComponent<Fruit>();
-        if (fruit != null && fruit.CanCheckGameOver())
+        if (IsAllFruitsAboveDeadline())
         {
             timer += Time.deltaTime;
-
             if (timer >= checkDelay)
             {
                 GameOver();
             }
         }
-    }
-
-    void OnTriggerExit2D(Collider2D collision)
-    {
-        Fruit fruit = collision.GetComponent<Fruit>();
-        if (fruit != null)
+        else
         {
             timer = 0f;
         }
     }
 
+    bool IsAllFruitsAboveDeadline()
+    {
+        var fruits = FindObjectsByType<Fruit>(FindObjectsSortMode.None);
+
+        bool hasActiveFruit = false;
+        foreach (var fruit in fruits)
+        {
+            if (!fruit.IsPhysicsEnabled()) continue;
+            hasActiveFruit = true;
+
+            float bottomY = fruit.transform.position.y - fruit.GetRadius();
+            if (bottomY <= transform.position.y) return false;
+        }
+
+        return hasActiveFruit;
+    }
+
     void GameOver()
     {
         isGameOver = true;
-        Debug.Log("Game Over! Final Score: " + GameManager.Instance.GetScore());
-        Time.timeScale = 0f;
+        GameManager.Instance.TriggerGameOver();
+    }
+
+    public void Reset()
+    {
+        isGameOver = false;
+        timer = 0f;
     }
 }

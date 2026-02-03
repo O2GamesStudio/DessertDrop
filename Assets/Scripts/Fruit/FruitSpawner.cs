@@ -7,7 +7,8 @@ public class FruitSpawner : MonoBehaviour
 
     [SerializeField] private GameObject fruitPrefab;
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private float containerHalfWidth = 2f;
+    [SerializeField] private Transform leftWall;
+    [SerializeField] private Transform rightWall;
     [SerializeField] private LineRenderer trajectoryLine;
     [SerializeField] private TextAsset probabilityConfigJson;
     [SerializeField] private float lineExtensionMultiplier = 3f;
@@ -23,6 +24,9 @@ public class FruitSpawner : MonoBehaviour
     private RaycastHit2D[] raycastHitBuffer = new RaycastHit2D[10];
     private const float maxRayDistance = 20f;
 
+    private float minX;
+    private float maxX;
+
     void Awake()
     {
         if (Instance == null)
@@ -36,6 +40,9 @@ public class FruitSpawner : MonoBehaviour
 
         mainCamera = Camera.main;
         containerFruitLayerMask = LayerMask.GetMask("Container", "Fruit");
+
+        minX = leftWall.position.x + leftWall.localScale.x * 0.5f;
+        maxX = rightWall.position.x - rightWall.localScale.x * 0.5f;
 
         if (trajectoryLine != null)
         {
@@ -60,7 +67,7 @@ public class FruitSpawner : MonoBehaviour
         if (touchPosition != Vector2.zero)
         {
             Vector3 worldPos = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, 10f));
-            float clampedX = Mathf.Clamp(worldPos.x, -containerHalfWidth + currentFruitRadius, containerHalfWidth - currentFruitRadius);
+            float clampedX = Mathf.Clamp(worldPos.x, minX + currentFruitRadius, maxX - currentFruitRadius);
             currentFruit.transform.position = new Vector3(clampedX, transform.position.y, 0f);
 
             if (!isDragging)
@@ -211,20 +218,15 @@ public class FruitSpawner : MonoBehaviour
 
         fruit.EnablePhysics();
     }
+
     Vector3 ClampMergePosition(Vector3 position, float newRadius)
     {
-        float minX = -containerHalfWidth + newRadius;
-        float maxX = containerHalfWidth - newRadius;
-
-        position.x = Mathf.Clamp(position.x, minX, maxX);
-
+        position.x = Mathf.Clamp(position.x, minX + newRadius, maxX - newRadius);
         return position;
     }
 
-    public float GetContainerHalfWidth()
-    {
-        return containerHalfWidth;
-    }
+    public float GetContainerMinX() => minX;
+    public float GetContainerMaxX() => maxX;
 
     FruitType GetRandomFruitType()
     {

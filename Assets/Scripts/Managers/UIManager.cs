@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private Image nextObjectImage;
+    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private TextMeshProUGUI gameOverScoreText;
     [SerializeField] private float countUpSpeed = 100f;
 
     private int currentDisplayScore = 0;
@@ -30,6 +32,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         UpdateScoreText(0);
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
     }
 
     public void UpdateScoreUI(int newScore)
@@ -57,6 +60,12 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void ShowGameOverUI(int finalScore)
+    {
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+        if (gameOverScoreText != null) gameOverScoreText.text = finalScore.ToString();
     }
 
     IEnumerator CountUpScore()

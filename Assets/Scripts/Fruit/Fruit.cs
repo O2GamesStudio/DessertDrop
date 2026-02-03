@@ -15,7 +15,7 @@ public class Fruit : MonoBehaviour
     private CircleCollider2D col;
     private SpriteRenderer sr;
     private bool canMerge = false;
-    private bool canCheckGameOver = false;
+    private bool isPhysicsEnabled = false;
 
     void Awake()
     {
@@ -73,12 +73,7 @@ public class Fruit : MonoBehaviour
     {
         rb.bodyType = RigidbodyType2D.Dynamic;
         canMerge = true;
-        Invoke(nameof(EnableGameOverCheck), 2f);
-    }
-
-    void EnableGameOverCheck()
-    {
-        canCheckGameOver = true;
+        isPhysicsEnabled = true;
     }
 
     public void DisablePhysics()
@@ -86,12 +81,12 @@ public class Fruit : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.linearVelocity = Vector2.zero;
         canMerge = false;
-        canCheckGameOver = false;
+        isPhysicsEnabled = false;
     }
 
-    public bool CanCheckGameOver()
+    public bool IsPhysicsEnabled()
     {
-        return canCheckGameOver;
+        return isPhysicsEnabled;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
