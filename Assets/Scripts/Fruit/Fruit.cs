@@ -69,8 +69,14 @@ public class Fruit : MonoBehaviour
         return explosionForce;
     }
 
+    public SpriteRenderer GetSpriteRenderer()
+    {
+        return sr;
+    }
+
     public void EnablePhysics()
     {
+        col.enabled = true;
         rb.bodyType = RigidbodyType2D.Dynamic;
         canMerge = true;
         isPhysicsEnabled = true;
@@ -78,6 +84,7 @@ public class Fruit : MonoBehaviour
 
     public void DisablePhysics()
     {
+        col.enabled = false;
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.linearVelocity = Vector2.zero;
         canMerge = false;

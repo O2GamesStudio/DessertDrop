@@ -41,8 +41,10 @@ public class FruitSpawner : MonoBehaviour
         mainCamera = Camera.main;
         containerFruitLayerMask = LayerMask.GetMask("Container", "Fruit");
 
-        minX = leftWall.position.x + leftWall.localScale.x * 0.5f;
-        maxX = rightWall.position.x - rightWall.localScale.x * 0.5f;
+        BoxCollider2D leftCol = leftWall.GetComponent<BoxCollider2D>();
+        BoxCollider2D rightCol = rightWall.GetComponent<BoxCollider2D>();
+        minX = leftWall.position.x + leftCol.size.x * leftWall.localScale.x * 0.5f;
+        maxX = rightWall.position.x - rightCol.size.x * rightWall.localScale.x * 0.5f;
 
         if (trajectoryLine != null)
         {

@@ -4159,7 +4159,7 @@ Transform:
   m_GameObject: {fileID: 2109372425}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.992, z: 0}
+  m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 16, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4178,8 +4178,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31a2a0208ff3b8e4ba5751f17cab3afa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeadLine
-  checkDelay: 3
-  colliderSize: {x: 4, y: 0.1}
+  gameOverDelay: 2
+  physicsSettleDelay: 1
+  blinkInterval: 0.15
+  warningColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!61 &2109372428
 BoxCollider2D:
   m_ObjectHideFlags: 0

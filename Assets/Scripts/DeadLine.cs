@@ -1,66 +1,146 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-[RequireComponent(typeof(BoxCollider2D))]
 public class DeadLine : MonoBehaviour
 {
-    [SerializeField] private float checkDelay = 2f;
-    [SerializeField] private Vector2 colliderSize = new Vector2(4f, 0.1f);
+    [SerializeField] private float gameOverDelay = 2f;
+    [SerializeField] private float physicsSettleDelay = 1f;
+    [SerializeField] private float blinkInterval = 0.15f;
+    [SerializeField] private Color warningColor = Color.red;
 
-    private float timer = 0f;
+    private float deadlineY;
     private bool isGameOver = false;
-    private BoxCollider2D col;
+    private Dictionary<Fruit, float> aboveTimers = new Dictionary<Fruit, float>();
+    private Dictionary<Fruit, float> blinkTimers = new Dictionary<Fruit, float>();
+    private Dictionary<Fruit, bool> blinkStates = new Dictionary<Fruit, bool>();
+    private Dictionary<Fruit, float> settleTimers = new Dictionary<Fruit, float>();
 
     void Awake()
     {
-        col = GetComponent<BoxCollider2D>();
-        col.isTrigger = true;
-        col.size = colliderSize;
+        deadlineY = transform.position.y;
     }
 
     void Update()
     {
         if (isGameOver) return;
 
-        if (IsAllFruitsAboveDeadline())
-        {
-            timer += Time.deltaTime;
-            if (timer >= checkDelay)
-            {
-                GameOver();
-            }
-        }
-        else
-        {
-            timer = 0f;
-        }
-    }
-
-    bool IsAllFruitsAboveDeadline()
-    {
         var fruits = FindObjectsByType<Fruit>(FindObjectsSortMode.None);
 
-        bool hasActiveFruit = false;
+        CleanupDictionaries(fruits);
+
         foreach (var fruit in fruits)
         {
             if (!fruit.IsPhysicsEnabled()) continue;
-            hasActiveFruit = true;
+
+            if (!settleTimers.ContainsKey(fruit))
+            {
+                settleTimers[fruit] = 0f;
+            }
+
+            settleTimers[fruit] += Time.deltaTime;
+            if (settleTimers[fruit] < physicsSettleDelay) continue;
 
             float bottomY = fruit.transform.position.y - fruit.GetRadius();
-            if (bottomY <= transform.position.y) return false;
-        }
+            bool isAbove = bottomY > deadlineY;
 
-        return hasActiveFruit;
+            if (isAbove)
+            {
+                if (!aboveTimers.ContainsKey(fruit))
+                {
+                    aboveTimers[fruit] = 0f;
+                }
+
+                aboveTimers[fruit] += Time.deltaTime;
+                HandleBlink(fruit, true);
+
+                if (aboveTimers[fruit] >= gameOverDelay)
+                {
+                    isGameOver = true;
+                    ResetAllColors(fruits);
+                    GameManager.Instance.TriggerGameOver();
+                    return;
+                }
+            }
+            else
+            {
+                if (aboveTimers.ContainsKey(fruit))
+                {
+                    aboveTimers.Remove(fruit);
+                    HandleBlink(fruit, false);
+                }
+            }
+        }
     }
 
-    void GameOver()
+    void HandleBlink(Fruit fruit, bool enable)
     {
-        isGameOver = true;
-        GameManager.Instance.TriggerGameOver();
+        SpriteRenderer sr = fruit.GetSpriteRenderer();
+        if (sr == null) return;
+
+        if (!enable)
+        {
+            sr.color = Color.white;
+            blinkTimers.Remove(fruit);
+            blinkStates.Remove(fruit);
+            return;
+        }
+
+        if (!blinkTimers.ContainsKey(fruit))
+        {
+            blinkTimers[fruit] = 0f;
+            blinkStates[fruit] = true;
+        }
+
+        blinkTimers[fruit] += Time.deltaTime;
+        if (blinkTimers[fruit] >= blinkInterval)
+        {
+            blinkTimers[fruit] = 0f;
+            blinkStates[fruit] = !blinkStates[fruit];
+            sr.color = blinkStates[fruit] ? warningColor : Color.white;
+        }
+    }
+
+    void CleanupDictionaries(Fruit[] activeFruits)
+    {
+        var activeSet = new HashSet<Fruit>(activeFruits);
+
+        var keys = new List<Fruit>(aboveTimers.Keys);
+        foreach (var key in keys)
+        {
+            if (!activeSet.Contains(key))
+            {
+                aboveTimers.Remove(key);
+                blinkTimers.Remove(key);
+                blinkStates.Remove(key);
+                settleTimers.Remove(key);
+            }
+        }
+
+        keys = new List<Fruit>(settleTimers.Keys);
+        foreach (var key in keys)
+        {
+            if (!activeSet.Contains(key))
+            {
+                settleTimers.Remove(key);
+            }
+        }
+    }
+
+    void ResetAllColors(Fruit[] fruits)
+    {
+        foreach (var fruit in fruits)
+        {
+            SpriteRenderer sr = fruit.GetSpriteRenderer();
+            if (sr != null) sr.color = Color.white;
+        }
     }
 
     public void Reset()
     {
         isGameOver = false;
-        timer = 0f;
+        aboveTimers.Clear();
+        blinkTimers.Clear();
+        blinkStates.Clear();
+        settleTimers.Clear();
     }
 }
