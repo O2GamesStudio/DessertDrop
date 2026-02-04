@@ -126,76 +126,42 @@ public class Fruit : MonoBehaviour
         GameManager.Instance.UpdateMaxLevel((int)nextType);
         GameManager.Instance.ResetNoMerge();
 
-        ApplyPushForce(mergePosition, nextType);
+        ApplyPushForce(mergePosition, nextType, other);
 
         FruitSpawner.Instance.SpawnMergedFruit(nextType, mergePosition);
 
         Destroy(other.gameObject);
         Destroy(gameObject);
     }
-    void ApplyPushForce(Vector3 explosionPosition, FruitType nextType)
+
+    void ApplyPushForce(Vector3 explosionPosition, FruitType nextType, Fruit other)
     {
         GameObject nextPrefab = GameManager.Instance.GetFruitPrefab(nextType);
         if (nextPrefab == null) return;
 
         Fruit nextFruit = nextPrefab.GetComponent<Fruit>();
         float newRadius = nextFruit.GetRadius();
-        float nextPushStrength = nextFruit.GetPushStrength();
-        float nextExplosionRadiusMultiplier = nextFruit.GetExplosionRadiusMultiplier();
+        float explosionRadius = newRadius * nextFruit.GetExplosionRadiusMultiplier();
         float nextExplosionForce = nextFruit.GetExplosionForce();
 
-        float explosionRadius = newRadius * nextExplosionRadiusMultiplier;
-        float maxRadius = Mathf.Max(newRadius * 2f, explosionRadius);
-
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(explosionPosition, maxRadius);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(explosionPosition, explosionRadius);
 
         foreach (Collider2D col in colliders)
         {
+            if (col.gameObject == gameObject || col.gameObject == other.gameObject) continue;
+
             Rigidbody2D targetRb = col.GetComponent<Rigidbody2D>();
-            if (targetRb != null && targetRb != rb)
-            {
-                Vector2 pushDirection = ((Vector2)col.transform.position - (Vector2)explosionPosition).normalized;
-                float distance = Vector2.Distance(col.transform.position, explosionPosition);
+            if (targetRb == null) continue;
 
-                float totalForce = 0f;
+            float distance = Vector2.Distance(col.transform.position, explosionPosition);
+            float explosionRatio = 1f - (distance / explosionRadius);
 
-                float requiredSpace = newRadius + col.bounds.extents.x;
-                if (distance < requiredSpace)
-                {
-                    float overlapRatio = 1f - (distance / requiredSpace);
-                    totalForce += nextPushStrength * overlapRatio;
-                }
+            Vector2 pushDirection = ((Vector2)col.transform.position - (Vector2)explosionPosition).normalized;
+            pushDirection.x *= 3.0f;
+            pushDirection.y *= 0.2f;
+            pushDirection = pushDirection.normalized;
 
-                if (distance < explosionRadius)
-                {
-                    float explosionRatio = 1f - (distance / explosionRadius);
-                    totalForce += nextExplosionForce * explosionRatio;
-                }
-
-                if (totalForce > 0f)
-                {
-                    if (col.transform.position.y > explosionPosition.y)
-                    {
-                        totalForce *= 0.6f;
-                    }
-                    else
-                    {
-                        totalForce *= 1.2f;
-                    }
-
-                    Vector2 enhancedDirection = pushDirection;
-                    enhancedDirection.x *= 1.5f;
-                    enhancedDirection = enhancedDirection.normalized;
-
-                    if (enhancedDirection.y > 0f)
-                    {
-                        enhancedDirection.y *= 0.5f;
-                        enhancedDirection = enhancedDirection.normalized;
-                    }
-
-                    targetRb.AddForce(enhancedDirection * totalForce, ForceMode2D.Impulse);
-                }
-            }
+            targetRb.AddForce(pushDirection * nextExplosionForce * explosionRatio, ForceMode2D.Impulse);
         }
     }
 }
