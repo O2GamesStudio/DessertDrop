@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fruit
   fruitType: 2
-  radius: 0.51
+  radius: 0.53
   score: 6
   pushStrength: 3
   explosionRadiusMultiplier: 1.5
