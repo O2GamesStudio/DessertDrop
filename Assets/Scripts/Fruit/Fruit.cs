@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(SpriteRenderer))]
 public class Fruit : MonoBehaviour
@@ -126,12 +127,18 @@ public class Fruit : MonoBehaviour
         GameManager.Instance.UpdateMaxLevel((int)nextType);
         GameManager.Instance.ResetNoMerge();
 
-        ApplyPushForce(mergePosition, nextType, other);
+        StartCoroutine(DelayedPushForce(mergePosition, nextType, other));
 
         FruitSpawner.Instance.SpawnMergedFruit(nextType, mergePosition);
 
         Destroy(other.gameObject);
         Destroy(gameObject);
+    }
+
+    IEnumerator DelayedPushForce(Vector3 explosionPosition, FruitType nextType, Fruit other)
+    {
+        yield return new WaitForSeconds(0.05f);
+        ApplyPushForce(explosionPosition, nextType, other);
     }
 
     void ApplyPushForce(Vector3 explosionPosition, FruitType nextType, Fruit other)
@@ -143,6 +150,7 @@ public class Fruit : MonoBehaviour
         float newRadius = nextFruit.GetRadius();
         float explosionRadius = newRadius * nextFruit.GetExplosionRadiusMultiplier();
         float nextExplosionForce = nextFruit.GetExplosionForce();
+        float nextMass = nextFruit.mass;
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(explosionPosition, explosionRadius);
 
@@ -156,12 +164,12 @@ public class Fruit : MonoBehaviour
             float distance = Vector2.Distance(col.transform.position, explosionPosition);
             float explosionRatio = 1f - (distance / explosionRadius);
 
-            Vector2 pushDirection = ((Vector2)col.transform.position - (Vector2)explosionPosition).normalized;
+            Vector2 pushDirection = ((Vector2)explosionPosition - (Vector2)col.transform.position).normalized;
             pushDirection.x *= 3.0f;
-            pushDirection.y *= 0.2f;
+            pushDirection.y *= 0.5f;
             pushDirection = pushDirection.normalized;
 
-            targetRb.AddForce(pushDirection * nextExplosionForce * explosionRatio, ForceMode2D.Impulse);
+            targetRb.AddForce(pushDirection * nextExplosionForce * nextMass * explosionRatio, ForceMode2D.Impulse);
         }
     }
 }

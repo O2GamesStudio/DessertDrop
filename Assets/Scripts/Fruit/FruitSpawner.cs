@@ -23,6 +23,7 @@ public class FruitSpawner : MonoBehaviour
     private int containerFruitLayerMask;
     private RaycastHit2D[] raycastHitBuffer = new RaycastHit2D[10];
     private const float maxRayDistance = 20f;
+    private float fruitScaleFactor = 1f;
 
     private float minX;
     private float maxX;
@@ -41,10 +42,7 @@ public class FruitSpawner : MonoBehaviour
         mainCamera = Camera.main;
         containerFruitLayerMask = LayerMask.GetMask("Container", "Fruit");
 
-        BoxCollider2D leftCol = leftWall.GetComponent<BoxCollider2D>();
-        BoxCollider2D rightCol = rightWall.GetComponent<BoxCollider2D>();
-        minX = leftWall.position.x + leftCol.size.x * leftWall.localScale.x * 0.5f;
-        maxX = rightWall.position.x - rightCol.size.x * rightWall.localScale.x * 0.5f;
+        CalculateFruitScale();
 
         if (trajectoryLine != null)
         {
@@ -54,11 +52,29 @@ public class FruitSpawner : MonoBehaviour
 
         LoadProbabilityConfig();
     }
-
     void Start()
     {
+        CalculateWallBounds();
+
         nextFruitType = GetRandomFruitType();
         SpawnNextFruit();
+    }
+    void CalculateFruitScale()
+    {
+        const float REFERENCE_WIDTH = 1080f;
+        const float REFERENCE_HEIGHT = 1920f;
+
+        float referenceAspect = REFERENCE_WIDTH / REFERENCE_HEIGHT;
+        float screenAspect = (float)Screen.width / Screen.height;
+
+        fruitScaleFactor = screenAspect / referenceAspect;
+    }
+    void CalculateWallBounds()
+    {
+        BoxCollider2D leftCol = leftWall.GetComponent<BoxCollider2D>();
+        BoxCollider2D rightCol = rightWall.GetComponent<BoxCollider2D>();
+        minX = leftWall.position.x + leftCol.size.x * leftWall.localScale.x * 0.5f;
+        maxX = rightWall.position.x - rightCol.size.x * rightWall.localScale.x * 0.5f;
     }
 
     void Update()
@@ -188,10 +204,12 @@ public class FruitSpawner : MonoBehaviour
         if (prefab == null) return;
 
         GameObject fruitObj = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+        fruitObj.transform.localScale = Vector3.one * fruitScaleFactor;
+
         currentFruit = fruitObj.GetComponent<Fruit>();
         currentFruit.DisablePhysics();
 
-        currentFruitRadius = currentFruit.GetRadius();
+        currentFruitRadius = currentFruit.GetRadius() * fruitScaleFactor;
 
         nextFruitType = GetRandomFruitType();
         UIManager.Instance.UpdateNextFruitUI(nextFruitType);
@@ -212,9 +230,11 @@ public class FruitSpawner : MonoBehaviour
         if (prefab == null) return;
 
         GameObject fruitObj = Instantiate(prefab, position, Quaternion.identity);
+        fruitObj.transform.localScale = Vector3.one * fruitScaleFactor;
+
         Fruit fruit = fruitObj.GetComponent<Fruit>();
 
-        float newRadius = fruit.GetRadius();
+        float newRadius = fruit.GetRadius() * fruitScaleFactor;
         Vector3 clampedPosition = ClampMergePosition(position, newRadius);
         fruitObj.transform.position = clampedPosition;
 

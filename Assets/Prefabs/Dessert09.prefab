@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 50bf214f62db3db45ace25fc3c92cfc9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 46b126db98f76014e8c85c6ac800819b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -155,8 +155,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 2.11
+  m_Offset: {x: 0, y: -0.04}
+  m_Radius: 1.56
 --- !u!114 &602111691079695276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,9 +170,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fruit
   fruitType: 8
-  radius: 2.11
+  radius: 1.56
   score: 45
   pushStrength: 6
-  explosionRadiusMultiplier: 1.2
-  explosionForce: 3
+  explosionRadiusMultiplier: 1.5
+  explosionForce: 1
   mass: 3.5

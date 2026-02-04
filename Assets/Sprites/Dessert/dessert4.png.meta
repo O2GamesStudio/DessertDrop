@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 516adb32cfb13124e83f10f76e3ca31f
+guid: 39833e0bea1f52747b956b954ccc7dd0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3785891907601179352
-    second: 12313_0
+      213: 5369062257319678786
+    second: dessert4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 12313_0
+      name: dessert4_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 243
-        height: 247
+        width: 128
+        height: 127
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 82dd7695e5fc57bc0800000000000000
-      internalID: -3785891907601179352
+      spriteID: 2431f703dadb28a40800000000000000
+      internalID: 5369062257319678786
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      12313_0: -3785891907601179352
+      dessert4_0: 5369062257319678786
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

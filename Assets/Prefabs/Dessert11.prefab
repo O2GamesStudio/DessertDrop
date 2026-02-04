@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2084047420553751699}
   - component: {fileID: 602111691079695276}
   m_Layer: 6
-  m_Name: Dessert08
+  m_Name: Dessert11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 468f7adc1d16fb04297c81dbdd03bc8e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7ba61bda7be7db547bf54f42d85b3e53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -156,7 +156,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 1.28
+  m_Radius: 2.32
 --- !u!114 &602111691079695276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,10 +169,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 338112c168885524abda7d1d8f3e4bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fruit
-  fruitType: 7
-  radius: 1.28
-  score: 36
-  pushStrength: 5.5
+  fruitType: 10
+  radius: 2.32
+  score: 70
+  pushStrength: 7
   explosionRadiusMultiplier: 1.5
   explosionForce: 1
-  mass: 3
+  mass: 5
