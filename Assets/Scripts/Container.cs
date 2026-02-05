@@ -4,7 +4,7 @@ public class Container : MonoBehaviour
 {
     private const float REFERENCE_WIDTH = 1080f;
     private const float REFERENCE_HEIGHT = 1920f;
-    private const float BASE_SCALE = 1.15f;
+    private const float BASE_SCALE = 1f;
 
     private void Awake()
     {
