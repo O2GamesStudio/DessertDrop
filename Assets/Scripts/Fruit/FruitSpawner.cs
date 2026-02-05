@@ -79,6 +79,9 @@ public class FruitSpawner : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance != null && (GameManager.Instance.IsGameOver() || GameManager.Instance.IsPaused()))
+            return;
+
         if (currentFruit == null) return;
 
         Vector2 touchPosition = GetInputPosition();
@@ -200,6 +203,9 @@ public class FruitSpawner : MonoBehaviour
 
     void SpawnNextFruit()
     {
+        if (GameManager.Instance != null && (GameManager.Instance.IsGameOver() || GameManager.Instance.IsPaused()))
+            return;
+
         GameObject prefab = GameManager.Instance.GetFruitPrefab(nextFruitType);
         if (prefab == null) return;
 

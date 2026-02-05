@@ -1,0 +1,32 @@
+{
+  "probabilitySets": [
+    {
+      "maxLevelThreshold": 2,
+      "probabilities": [ 0.33, 0.28, 0.20, 0.11, 0.05, 0.03 ]
+    },
+    {
+      "maxLevelThreshold": 3,
+      "probabilities": [ 0.31, 0.27, 0.20, 0.13, 0.06, 0.03 ]
+    },
+    {
+      "maxLevelThreshold": 5,
+      "probabilities": [ 0.28, 0.25, 0.21, 0.15, 0.07, 0.04 ]
+    },
+    {
+      "maxLevelThreshold": 7,
+      "probabilities": [ 0.24, 0.23, 0.22, 0.18, 0.08, 0.05 ]
+    },
+    {
+      "maxLevelThreshold": 9,
+      "probabilities": [ 0.20, 0.21, 0.22, 0.21, 0.10, 0.06 ]
+    },
+    {
+      "maxLevelThreshold": 999,
+      "probabilities": [ 0.16, 0.18, 0.22, 0.24, 0.12, 0.08 ]
+    }
+  ],
+  "emergencyBoost": 0.15,
+  "emergencyFruitCount": 20,
+  "noMergeBoost": 0.20,
+  "noMergeThreshold": 5
+}

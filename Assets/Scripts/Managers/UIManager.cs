@@ -9,8 +9,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private Image nextObjectImage;
-    [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private TextMeshProUGUI gameOverScoreText;
+    [SerializeField] private GameOverPanel gameOverPanel;
+    [SerializeField] private SettingPanel settingPanel;
+    [SerializeField] private Button settingBtn;
     [SerializeField] private float countUpSpeed = 100f;
 
     private int currentDisplayScore = 0;
@@ -32,7 +33,23 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         UpdateScoreText(0);
-        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (gameOverPanel != null) gameOverPanel.gameObject.SetActive(false);
+        if (settingPanel != null) settingPanel.gameObject.SetActive(false);
+
+        if (settingBtn != null)
+            settingBtn.onClick.AddListener(OnSettingBtnClicked);
+    }
+
+    void OnSettingBtnClicked()
+    {
+        if (settingPanel != null)
+        {
+            settingPanel.gameObject.SetActive(true);
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.PauseGame();
+            }
+        }
     }
 
     public void UpdateScoreUI(int newScore)
@@ -64,8 +81,10 @@ public class UIManager : MonoBehaviour
 
     public void ShowGameOverUI(int finalScore)
     {
-        if (gameOverPanel != null) gameOverPanel.SetActive(true);
-        if (gameOverScoreText != null) gameOverScoreText.text = finalScore.ToString();
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.Show(finalScore);
+        }
     }
 
     IEnumerator CountUpScore()
@@ -90,5 +109,11 @@ public class UIManager : MonoBehaviour
         {
             scoreText.text = score.ToString();
         }
+    }
+
+    void OnDestroy()
+    {
+        if (settingBtn != null)
+            settingBtn.onClick.RemoveListener(OnSettingBtnClicked);
     }
 }

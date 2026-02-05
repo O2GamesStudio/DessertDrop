@@ -11,6 +11,9 @@ public class Fruit : MonoBehaviour
     [SerializeField] private float explosionRadiusMultiplier = 2f;
     [SerializeField] private float explosionForce = 5f;
     [SerializeField] private float mass = 1f;
+    [SerializeField] private AudioClip mergeSfx;
+    [SerializeField] private GameObject combineVFXPrefab;
+    [SerializeField] private float vfxScaleMultiplier = 1f;
 
     private Rigidbody2D rb;
     private CircleCollider2D col;
@@ -123,6 +126,13 @@ public class Fruit : MonoBehaviour
         Vector3 mergePosition = (transform.position + other.transform.position) / 2f;
         FruitType nextType = (FruitType)((int)fruitType + 1);
 
+        if (SoundManager.Instance != null && mergeSfx != null)
+        {
+            SoundManager.Instance.PlaySFX(mergeSfx);
+        }
+
+        SpawnCombineVFX(mergePosition, nextType);
+
         GameManager.Instance.AddScore(score);
         GameManager.Instance.UpdateMaxLevel((int)nextType);
         GameManager.Instance.ResetNoMerge();
@@ -133,6 +143,31 @@ public class Fruit : MonoBehaviour
 
         Destroy(other.gameObject);
         Destroy(gameObject);
+    }
+
+    void SpawnCombineVFX(Vector3 position, FruitType nextType)
+    {
+        if (combineVFXPrefab == null) return;
+
+        GameObject nextPrefab = GameManager.Instance.GetFruitPrefab(nextType);
+        if (nextPrefab == null) return;
+
+        Fruit nextFruit = nextPrefab.GetComponent<Fruit>();
+        float nextRadius = nextFruit.GetRadius();
+        float vfxScale = nextRadius * vfxScaleMultiplier;
+
+        GameObject vfx = Instantiate(combineVFXPrefab, position, Quaternion.identity);
+        vfx.transform.localScale = Vector3.one * vfxScale;
+
+        ParticleSystem ps = vfx.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            Destroy(vfx, ps.main.duration + ps.main.startLifetime.constantMax);
+        }
+        else
+        {
+            Destroy(vfx, 2f);
+        }
     }
 
     IEnumerator DelayedPushForce(Vector3 explosionPosition, FruitType nextType, Fruit other)

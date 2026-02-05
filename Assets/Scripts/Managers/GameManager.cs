@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     private int currentMaxLevel = 0;
     private int consecutiveNoMerge = 0;
     private bool isGameOver = false;
+    private bool isPaused = false;
 
     void Awake()
     {
@@ -20,6 +21,14 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    void Start()
+    {
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayGameBGM();
         }
     }
 
@@ -96,5 +105,24 @@ public class GameManager : MonoBehaviour
     public bool IsGameOver()
     {
         return isGameOver;
+    }
+
+    public void PauseGame()
+    {
+        if (isGameOver) return;
+        isPaused = true;
+        Time.timeScale = 0f;
+    }
+
+    public void ResumeGame()
+    {
+        if (isGameOver) return;
+        isPaused = false;
+        Time.timeScale = 1f;
+    }
+
+    public bool IsPaused()
+    {
+        return isPaused;
     }
 }
